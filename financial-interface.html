@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中泰证券 - 移动运营平台</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(90deg, #5c6bc0 0%, #7986cb 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #5c6bc0;
+            font-size: 12px;
+        }
+
+        .platform-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-info {
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: #ff9800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 30px;
+            background: #e8eaf6;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab-button:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .tab-button:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tab-button.active {
+            background: #5c6bc0;
+            color: white;
+        }
+
+        /* Document Upload Section */
+        .document-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .document-item:hover {
+            border-color: #5c6bc0;
+            background: #f8f9ff;
+        }
+
+        .document-item.required::after {
+            content: '必须';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff5722;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .document-item.uploaded {
+            border-color: #4caf50;
+            background: #f1f8e9;
+        }
+
+        .document-icon {
+            width: 48px;
+            height: 48px;
+            background: #5c6bc0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .document-label {
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .document-sublabel {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* Main Upload Area */
+        .upload-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .main-upload-area {
+            flex: 1;
+            border: 3px dashed #5c6bc0;
+            border-radius: 12px;
+            background: white;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .main-upload-area:hover {
+            background: #f8f9ff;
+            border-color: #3f51b5;
+        }
+
+        .main-upload-area.dragover {
+            background: #e8eaf6;
+            border-color: #3f51b5;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .upload-hint {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .drag-arrow {
+            position: absolute;
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5c6bc0;
+            font-size: 48px;
+        }
+
+        .drag-text {
+            position: absolute;
+            left: -150px;
+            top: 60%;
+            color: #ff5722;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Side Panel */
+        .side-panel {
+            width: 200px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .side-panel-title {
+            text-align: center;
+            color: #ff5722;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .side-upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .side-upload-area:hover {
+            border-color: #5c6bc0;
+            background: #f8f9ff;
+        }
+
+        .side-arrow {
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff5722;
+            font-size: 36px;
+        }
+
+        /* Footer Buttons */
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-button {
+            padding: 12px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .skip-button {
+            background: #5c6bc0;
+            color: white;
+        }
+
+        .skip-button:hover {
+            background: #3f51b5;
+        }
+
+        .next-button {
+            background: white;
+            color: #5c6bc0;
+            border: 2px solid #5c6bc0;
+        }
+
+        .next-button:hover {
+            background: #5c6bc0;
+            color: white;
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .file-name {
+            flex: 1;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .file-remove {
+            color: #f44336;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .document-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .upload-container {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+            }
+            
+            .drag-arrow, .drag-text, .side-arrow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo">中泰</div>
+                <div class="platform-title">移动运营平台</div>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-item">
+                    <span>📄</span>
+                    <span>业务流水</span>
+                </div>
+                <div class="nav-item">
+                    <span>🔍</span>
+                    <span>全部业务</span>
+                </div>
+            </nav>
+            
+            <div class="user-section">
+                <div class="time-info">9:54 AM 09-08 星期一</div>
+                <div class="user-avatar">见</div>
+                <span>见证客户</span>
+                <span>▼</span>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button 
+                    class="tab-button" 
+                    :class="{ active: activeTab === 'regular' }"
+                    @click="activeTab = 'regular'"
+                >
+                    普通企业
+                </button>
+                <button 
+                    class="tab-button" 
+                    :class="{ active: activeTab === 'partnership' }"
+                    @click="activeTab = 'partnership'"
+                >
+                    合伙企业
+                </button>
+            </div>
+
+            <!-- Document Section -->
+            <div class="document-section">
+                <!-- Document Grid -->
+                <div class="document-grid">
+                    <div 
+                        v-for="doc in documents" 
+                        :key="doc.id"
+                        class="document-item"
+                        :class="{ required: doc.required, uploaded: doc.uploaded }"
+                        @click="uploadDocument(doc.id)"
+                    >
+                        <div class="document-icon">{{ doc.icon }}</div>
+                        <div class="document-label">{{ doc.label }}</div>
+                        <div class="document-sublabel" v-if="doc.sublabel">{{ doc.sublabel }}</div>
+                    </div>
+                </div>
+
+                <!-- Upload Container -->
+                <div class="upload-container">
+                    <!-- Drag Arrow and Text -->
+                    <div class="drag-arrow">↗</div>
+                    <div class="drag-text">
+                        列表放左边<br>
+                        向左的摄像头不要
+                    </div>
+
+                    <!-- Main Upload Area -->
+                    <div 
+                        class="main-upload-area"
+                        :class="{ dragover: isDragOver }"
+                        @dragover.prevent="isDragOver = true"
+                        @dragleave.prevent="isDragOver = false"
+                        @drop.prevent="handleDrop"
+                        @click="triggerFileInput"
+                    >
+                        <div class="upload-placeholder" v-if="uploadedFiles.length === 0">
+                            中间是示例
+                        </div>
+                        <div v-else class="file-list">
+                            <div v-for="file in uploadedFiles" :key="file.name" class="file-item">
+                                <span class="file-name">{{ file.name }}</span>
+                                <span class="file-remove" @click.stop="removeFile(file)">×</span>
+                            </div>
+                        </div>
+                        <div class="upload-hint">
+                            拖拽文件到此处或点击上传
+                        </div>
+                    </div>
+
+                    <!-- Side Panel -->
+                    <div class="side-panel">
+                        <div class="side-panel-title">拍照按钮</div>
+                        <div 
+                            class="side-upload-area"
+                            @click="openCamera"
+                        >
+                            <span>📷</span>
+                        </div>
+                    </div>
+
+                    <!-- Side Arrow -->
+                    <div class="side-arrow">→</div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="footer-buttons">
+                <button class="footer-button skip-button" @click="skipDialog">
+                    跳过对话
+                </button>
+                <button class="footer-button next-button" @click="nextStep">
+                    下一步
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden File Input -->
+        <input 
+            type="file" 
+            ref="fileInput" 
+            multiple 
+            style="display: none"
+            @change="handleFileSelect"
+        >
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    activeTab: 'regular',
+                    isDragOver: false,
+                    uploadedFiles: [],
+                    documents: [
+                        {
+                            id: 'business-license',
+                            icon: '📋',
+                            label: '营业执照',
+                            sublabel: '(机构身份证明文件)',
+                            required: true,
+                            uploaded: false
+                        },
+                        {
+                            id: 'id-proof',
+                            icon: '🆔',
+                            label: '经办人身份证明文件',
+                            sublabel: '',
+                            required: false,
+                            uploaded: false
+                        },
+                        {
+                            id: 'agreement',
+                            icon: '📄',
+                            label: '三方存管协议',
+                            sublabel: '',
+                            required: false,
+                            uploaded: false
+                        },
+                        {
+                            id: 'legal-person',
+                            icon: '👤',
+                            label: '法定代表人身份证明文件',
+                            sublabel: '',
+                            required: false,
+                            uploaded: false
+                        }
+                    ]
+                }
+            },
+            methods: {
+                uploadDocument(docId) {
+                    // Simulate document upload
+                    const doc = this.documents.find(d => d.id === docId);
+                    if (doc) {
+                        doc.uploaded = !doc.uploaded;
+                    }
+                },
+                handleDrop(event) {
+                    this.isDragOver = false;
+                    const files = Array.from(event.dataTransfer.files);
+                    this.addFiles(files);
+                },
+                handleFileSelect(event) {
+                    const files = Array.from(event.target.files);
+                    this.addFiles(files);
+                },
+                addFiles(files) {
+                    files.forEach(file => {
+                        if (!this.uploadedFiles.find(f => f.name === file.name)) {
+                            this.uploadedFiles.push(file);
+                        }
+                    });
+                },
+                removeFile(fileToRemove) {
+                    this.uploadedFiles = this.uploadedFiles.filter(file => file !== fileToRemove);
+                },
+                triggerFileInput() {
+                    this.$refs.fileInput.click();
+                },
+                openCamera() {
+                    // Simulate camera functionality
+                    alert('打开摄像头功能');
+                },
+                skipDialog() {
+                    alert('跳过对话');
+                },
+                nextStep() {
+                    if (this.uploadedFiles.length === 0) {
+                        alert('请先上传文件');
+                        return;
+                    }
+                    alert('进入下一步');
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
