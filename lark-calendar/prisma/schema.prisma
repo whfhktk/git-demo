@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Core models for a Lark-like calendar
+model Calendar {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  
+  color       String   @default("#3b82f6")
+  timezone    String   @default("UTC")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  events      Event[]
+}
+
+model Event {
+  id            String    @id @default(cuid())
+  calendarId    String
+  calendar      Calendar  @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  location      String?
+  // Start/end are stored in UTC; timezone field indicates the event's intended tz
+  startUtc      DateTime
+  endUtc        DateTime
+  allDay        Boolean   @default(false)
+  // Recurrence via RFC5545 RRULE string, plus optional EXDATE/RSVP-like overrides
+  rrule         String?
+  exdatesJson   String?   // JSON array of ISO dates to exclude
+  rdatesJson    String?   // JSON array of ISO dates to force-include
+  // Reminders: JSON array of minutes before start
+  remindersJson String?   // e.g., [10, 30, 60]
+  visibility    String    @default("default") // default|private|public
+  organizer     String?   // organizer user id or email
+  attendeesJson String?   // JSON array of {email,name,optional}
+  conferenceUrl String?
+  timezone      String    @default("UTC")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([calendarId])
+  @@index([startUtc])
+  @@index([endUtc])
+}
