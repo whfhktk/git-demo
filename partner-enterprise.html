@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>中泰证券 · 移动运营平台 - 合伙企业</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root{
+        --brand-600:#3A7AF3;
+        --brand-700:#2E6BE0;
+        --brand-800:#1E52B9;
+        --bg:#F5F7FD;
+        --panel:#FFFFFF;
+        --muted:#8FA0B8;
+        --border:#E6ECF5;
+        --danger:#E55454;
+        --ok:#10B981;
+        --shadow:0 8px 24px rgba(25,39,79,.08),0 2px 6px rgba(25,39,79,.05);
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
+        color:#1F2A44;
+        background: radial-gradient(1200px 600px at 85% 110%,#E6EEFF,transparent 60%),
+                    radial-gradient(800px 400px at 10% -10%,#EAF0FF,transparent 60%),
+                    var(--bg);
+      }
+      .topbar{
+        background: linear-gradient(90deg,var(--brand-800),var(--brand-600));
+        color:#fff;
+        box-shadow: var(--shadow);
+      }
+      .topbar-inner{
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand{
+        display:flex;align-items:center;gap:14px;font-weight:700;letter-spacing:.5px
+      }
+      .brand .divider{width:1px;height:22px;background:rgba(255,255,255,.35)}
+      .brand .sub{font-weight:600;opacity:.95}
+      .top-actions{display:flex;align-items:center;gap:18px;font-weight:600;opacity:.95}
+      .container{
+        max-width: 1320px;
+        margin: 18px auto 40px;
+        padding: 0 20px;
+      }
+      /* Tabs */
+      .tabs{display:flex;gap:10px;margin-bottom:14px}
+      .tab{
+        background:#fff;border:1px solid var(--border);
+        padding:10px 16px;border-radius:10px;cursor:pointer;
+        font-weight:600;color:#476285;box-shadow: var(--shadow);
+      }
+      .tab.active{background:linear-gradient(#fff,#F8FAFF);border-color:transparent;color:#0E1F44;outline:2px solid #E9F1FF}
+      /* Doc cards */
+      .doc-row{
+        display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px
+      }
+      .doc-card{
+        flex:0 0 300px;max-width:300px;
+        background:#fff;border:1px solid var(--border);border-radius:14px;
+        padding:14px 16px;box-shadow: var(--shadow);cursor:pointer;position:relative
+      }
+      .doc-card.active{outline:2px solid var(--brand-600)}
+      .doc-title{font-weight:700;margin:2px 0 8px}
+      .badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:700}
+      .badge.required{background:#FFECEC;color:var(--danger);border:1px solid #FFD3D3}
+      .badge.optional{background:#ECFDF5;color:#047857;border:1px solid #BAF7D5}
+      .hint{position:absolute;right:10px;top:10px;font-size:12px;color:#94A3B8}
+      /* Main work area */
+      .work-area{
+        background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow: var(--shadow);
+        padding:18px;min-height:540px;display:grid;grid-template-columns: 240px 1fr 230px;gap:18px
+      }
+      /* left list */
+      .thumbs{
+        border:1px dashed #C9D7EE;border-radius:12px;padding:12px;background:linear-gradient(#FCFEFF,#F7FAFF)
+      }
+      .thumbs-title{font-weight:700;margin:2px 0 10px;color:#476285}
+      .thumb{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;cursor:pointer}
+      .thumb + .thumb{margin-top:8px}
+      .thumb:hover{background:#F2F6FF}
+      .thumb.active{background:#E9F1FF;outline:1px solid #CFE0FF}
+      .thumb img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#EDF2FF;border:1px solid #E3EBFF}
+      .thumb .meta{display:flex;flex-direction:column}
+      .thumb .meta .n{font-weight:700}
+      .thumb .meta .t{font-size:12px;color:#8391A8}
+      /* center preview */
+      .preview{
+        border:2px solid #E03B3B22;border-radius:12px;min-height:420px;display:flex;align-items:center;justify-content:center;position:relative;background:#FAFCFF
+      }
+      .preview .placeholder{color:#e33;font-weight:700;font-size:18px;opacity:.7}
+      .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+      .flash.animate{animation:flash .5s ease}
+      @keyframes flash{0%{opacity:0}30%{opacity:.85}100%{opacity:0}}
+      /* right panel */
+      .right-panel{
+        display:flex;flex-direction:column;gap:12px
+      }
+      .camera-box{
+        flex:1;border:2px solid #3A7AF3;border-radius:12px;background:#F4F8FF;
+        display:flex;align-items:center;justify-content:center;color:#3A7AF3;font-weight:700
+      }
+      .side-hint{color:#9AA8C0;text-align:center}
+      /* footer buttons */
+      .footer{
+        display:flex;justify-content:flex-end;gap:16px;margin-top:16px
+      }
+      .btn{appearance:none;border:0;border-radius:10px;padding:12px 26px;font-weight:800;cursor:pointer}
+      .btn.secondary{background:#EDF2FF;color:#1E3A8A}
+      .btn.primary{background:linear-gradient(90deg,#FF6A3D,#FF874D);color:#fff;box-shadow:0 8px 18px rgba(255,122,66,.28)}
+      .btn.primary:active{transform:translateY(1px)}
+      .btn.secondary:active{transform:translateY(1px)}
+      /* small screen */
+      @media (max-width: 1100px){
+        .work-area{grid-template-columns: 200px 1fr}
+        .right-panel{grid-column: 1 / -1;flex-direction:row}
+        .camera-box{height:140px}
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span style="display:inline-flex;gap:8px;align-items:center"><img src="https://img.shields.io/badge/%E4%B8%AD%E6%B3%B0-%E8%AF%81%E5%88%B8-2E6BE0?style=for-the-badge&logoColor=fff" alt="logo" height="22"/></span>
+          <span class="divider"></span>
+          <span class="sub">移动运营平台</span>
+        </div>
+        <div class="top-actions">
+          <span>业务流水</span>
+          <span>全部业务</span>
+          <span style="opacity:.8">9:54 AM</span>
+          <span style="background:rgba(255,255,255,.2);padding:6px 10px;border-radius:999px">见证受理</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="app" class="container" v-cloak>
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab" :class="{active: activeTab==='普通企业'}" @click="activeTab='普通企业'">普通企业</div>
+        <div class="tab" :class="{active: activeTab==='合伙企业'}" @click="activeTab='合伙企业'">合伙企业</div>
+      </div>
+
+      <!-- Document cards -->
+      <div class="doc-row">
+        <div class="doc-card" v-for="(doc,idx) in documents" :key="doc.id" :class="{active:selectedDocId===doc.id}" @click="selectDoc(doc.id)">
+          <div class="hint">{{ doc.required ? '必录' : '非必录' }}</div>
+          <div class="doc-title">{{ doc.title }}</div>
+          <span class="badge" :class="doc.required ? 'required' : 'optional'">
+            <span>{{ doc.required ? '必须' : '非必须' }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Work area -->
+      <section class="work-area">
+        <!-- Left thumbnails list -->
+        <aside class="thumbs">
+          <div class="thumbs-title">资料列表</div>
+          <div class="thumb" v-for="item in thumbnails" :key="item.id" :class="{active: item.id===activeThumbId}" @click="activeThumbId=item.id">
+            <img :src="item.src" alt="thumb" />
+            <div class="meta">
+              <span class="n">第 {{ item.id }} 张</span>
+              <span class="t">{{ item.time }}</span>
+            </div>
+          </div>
+          <div v-if="!thumbnails.length" style="color:#8FA0B8">暂无影像，点击右侧拍照按钮</div>
+        </aside>
+
+        <!-- Center preview -->
+        <div class="preview">
+          <div class="placeholder">中间是示例</div>
+          <div class="flash" :class="{animate: flash}"></div>
+        </div>
+
+        <!-- Right panel with camera button -->
+        <div class="right-panel">
+          <div class="camera-box" role="button" @click="takePhoto">拍照按钮</div>
+          <div class="side-hint">点击拍照将添加到左侧列表</div>
+        </div>
+      </section>
+
+      <!-- Footer buttons -->
+      <div class="footer">
+        <button class="btn secondary" @click="skip">跳过回录</button>
+        <button class="btn primary" @click="next">下一步</button>
+      </div>
+    </main>
+
+    <script src="https://unpkg.com/vue@3.5.12/dist/vue.global.prod.js"></script>
+    <script>
+      const { createApp, reactive, ref } = Vue;
+      createApp({
+        setup(){
+          const activeTab = ref('合伙企业');
+          const documents = reactive([
+            { id: 'biz', title: '营业执照（机构身份证明文件）', required: true },
+            { id: 'agent-id', title: '经办人身份证明文件', required: false },
+            { id: 'bank-agreement', title: '三方存管协议', required: false },
+            { id: 'legal-id', title: '法定代表人身份证明文件', required: true }
+          ]);
+          const selectedDocId = ref('biz');
+
+          const thumbnails = ref([]);
+          const activeThumbId = ref(null);
+          const flash = ref(false);
+
+          function formatTime(d){
+            return [
+              String(d.getHours()).padStart(2,'0'),':',
+              String(d.getMinutes()).padStart(2,'0'),':',
+              String(d.getSeconds()).padStart(2,'0')
+            ].join('');
+          }
+
+          function selectDoc(id){ selectedDocId.value = id; }
+
+          function takePhoto(){
+            // Flash animation
+            flash.value = false; // reset to allow re-trigger
+            requestAnimationFrame(()=>{ flash.value = true; setTimeout(()=>{ flash.value = false; }, 520); });
+
+            const id = thumbnails.value.length + 1;
+            const time = formatTime(new Date());
+            // Create a simple placeholder image for thumbnails
+            const src = `https://placehold.co/96x96/EDF2FF/1F2A44?text=${id}`;
+            thumbnails.value.unshift({ id, time, src });
+            activeThumbId.value = id;
+          }
+
+          function skip(){ alert('已跳过回录'); }
+          function next(){ alert('进入下一步'); }
+
+          return { activeTab, documents, selectedDocId, selectDoc, thumbnails, activeThumbId, takePhoto, skip, next, flash };
+        }
+      }).mount('#app');
+    </script>
+  </body>
+</html>
